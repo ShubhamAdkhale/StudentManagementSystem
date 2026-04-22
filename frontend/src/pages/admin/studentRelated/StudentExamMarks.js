@@ -20,6 +20,9 @@ const StudentExamMarks = ({ situation }) => {
     const { subjectsList } = useSelector((state) => state.sclass);
     const { response, error, statestatus } = useSelector((state) => state.student);
     const params = useParams()
+    const paramId = params.id;
+    const paramStudentID = params.studentID;
+    const paramSubjectID = params.subjectID;
 
     const [studentID, setStudentID] = useState("");
     const [subjectName, setSubjectName] = useState("");
@@ -32,23 +35,22 @@ const StudentExamMarks = ({ situation }) => {
 
     useEffect(() => {
         if (situation === "Student") {
-            setStudentID(params.id);
-            const stdID = params.id
+            setStudentID(paramId);
+            const stdID = paramId
             dispatch(getUserDetails(stdID, "Student"));
         }
         else if (situation === "Subject") {
-            const { studentID, subjectID } = params
-            setStudentID(studentID);
-            dispatch(getUserDetails(studentID, "Student"));
-            setChosenSubName(subjectID);
+            setStudentID(paramStudentID);
+            dispatch(getUserDetails(paramStudentID, "Student"));
+            setChosenSubName(paramSubjectID);
         }
-    }, [situation]);
+    }, [dispatch, situation, paramId, paramStudentID, paramSubjectID]);
 
     useEffect(() => {
         if (userDetails && userDetails.sclassName && situation === "Student") {
             dispatch(getSubjectList(userDetails.sclassName._id, "ClassSubjects"));
         }
-    }, [dispatch, userDetails]);
+    }, [dispatch, userDetails, situation]);
 
     const changeHandler = (event) => {
         const selectedSubject = subjectsList.find(
